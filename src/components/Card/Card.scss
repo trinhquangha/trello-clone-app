@@ -2,7 +2,7 @@
 
 $card-border-radius: 3px;
 
-li.task-item {
+li.card-item {
 	background-color: white;
 	padding: $gap;
 	border-radius: $card-border-radius;
@@ -11,8 +11,9 @@ li.task-item {
 		margin-bottom: $gap;
 	}
 
-	img {
+	img.card-cover {
 		display: block;
 		width: 100%;
+		margin-bottom: $gap;
 	}
 }
