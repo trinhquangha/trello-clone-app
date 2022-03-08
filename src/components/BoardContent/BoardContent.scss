@@ -2,10 +2,13 @@
 
 .board-content {
 	height: $board-content-height;
-	// display: flex;
-	// margin: 0 $gap $gap;
+	display: flex;
 	overflow-x: auto;
 	overflow-y: hidden;
+	&::after {
+		content: '';
+		flex: 0 0 $gap;
+	}
 	&::-webkit-scrollbar {
 		-webkit-appearance: none;
 	}
@@ -25,5 +28,51 @@
 		background-color: rgba(150, 150, 200, 0.1);
 		border: 1px dashed #abc;
 		margin: 5px 45px 5px 5px;
+	}
+
+	.add-another-column {
+		margin-left: $gap;
+		width: 300px;
+		max-width: 300px;
+		line-height: 32px;
+		padding: 4px 0 4px 16px;
+		font-size: 15px;
+		color: white;
+		background-color: hsla(0, 0%, 100%, 0.24);
+		border-radius: $column-border-radius;
+		cursor: pointer;
+
+		&:hover {
+			background-color: hsla(0, 0%, 100%, 0.34);
+		}
+	}
+
+	.enter-new-column {
+		width: 300px;
+		max-width: 300px;
+		margin-left: $gap;
+		background-color: $column-bg-color;
+		line-height: 32px;
+		padding: 5px 10px;
+		border-radius: $column-border-radius;
+
+		.add-column-control {
+			margin: 5px 0;
+			display: flex;
+			align-items: center;
+
+			.cancel-new-column {
+				margin-left: $gap;
+				cursor: pointer;
+				i {
+					display: inline-block;
+					font-size: 18px;
+					color: $alert-danger-color;
+					&:hover {
+						color: darken($alert-danger-color, 10);
+					}
+				}
+			}
+		}
 	}
 }
