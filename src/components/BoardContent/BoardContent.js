@@ -6,6 +6,7 @@ import { Container, Draggable } from 'react-smooth-dnd'
 import Column from 'components/Column/Column'
 
 import { mapOrder } from 'utilities/sorts'
+import { applyDrag } from 'utilities/dragDrop'
 
 import { isEmpty } from 'lodash'
 import { initialData } from 'actions/initialData'
@@ -30,8 +31,27 @@ const BoardContent = () => {
 	}
 
 	const onColumnDrop = (dropResult) => {
-		// eslint-disable-next-line no-console
-		console.log(dropResult)
+		let newColumns = [...columns]
+		newColumns = applyDrag(newColumns, dropResult)
+
+		const newBoard = { ...board }
+		newBoard.columnOrder = newColumns.map((column) => column.id)
+		newBoard.columns = newColumns
+
+		setColumns(newColumns)
+		setBoard(newBoard)
+	}
+
+	const onCardDrop = (columnId, dropResult) => {
+		if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+			let newColumns = [...columns]
+
+			let currentColumn = newColumns.find((column) => column.id === columnId)
+			currentColumn.cards = applyDrag(currentColumn.cards, dropResult)
+			currentColumn.cardOrder = currentColumn.cards.map((card) => card.id)
+
+      setColumns(newColumns)
+		}
 	}
 
 	return (
@@ -48,7 +68,7 @@ const BoardContent = () => {
 				}}>
 				{columns.map((column, index) => (
 					<Draggable key={index}>
-						<Column column={column} />
+						<Column column={column} onCardDrop={onCardDrop} />
 					</Draggable>
 				))}
 			</Container>
