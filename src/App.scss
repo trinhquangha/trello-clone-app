@@ -1,8 +1,6 @@
 @import '~bootstrap/scss/bootstrap';
 @import '_setting.scss';
 
-$board-bg-color: #0079bf;
-
 * {
 	margin: 0;
 	padding: 0;
@@ -46,7 +44,19 @@ body {
 
 	.btn:focus,
 	.btn:active {
-		outline: none;
-		box-shadow: none;
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	.content-editable {
+		background-color: inherit;
+		font-size: inherit;
+		font-weight: inherit;
+		border: none;
+    cursor: pointer;
+    &:focus {
+      background-color: white;
+      border: 1px solid $input-border-color;
+    }
 	}
 }
