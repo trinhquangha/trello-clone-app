@@ -175,7 +175,7 @@ const BoardContent = () => {
 									Add column
 								</Button>
 								<span
-									className="cancel-new-column"
+									className="cancel-icon"
 									onClick={toggleOpenNewColumnForm}>
 									<i className="fa fa-trash icon"></i>
 								</span>
