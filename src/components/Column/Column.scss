@@ -129,5 +129,16 @@ $column-height: calc(#{$board-content-height} - 3 * #{$gap});
 			border: 1px dashed #abc;
 			margin: 5px;
 		}
+
+		.add-new-card-area {
+			.textarea-new-card {
+				min-height: 54px;
+				max-height: 162px;
+				margin-bottom: $gap;
+			}
+			.add-card-control {
+				margin-bottom: $gap;
+			}
+		}
 	}
 }
