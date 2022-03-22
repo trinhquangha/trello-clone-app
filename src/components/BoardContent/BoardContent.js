@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
-import './BoardContent.scss'
+import React, { useEffect, useRef, useState } from 'react';
+import './BoardContent.scss';
 
-import { Container, Draggable } from 'react-smooth-dnd'
+import { Container, Draggable } from 'react-smooth-dnd';
 
 import {
 	Container as BootstrapContainer,
@@ -9,120 +9,119 @@ import {
 	Col,
 	Form,
 	Button,
-} from 'react-bootstrap'
+} from 'react-bootstrap';
 
-import Column from 'components/Column/Column'
+import Column from 'components/Column/Column';
 
-import { mapOrder } from 'utilities/sorts'
-import { applyDrag } from 'utilities/dragDrop'
+import { mapOrder } from 'utilities/sorts';
+import { applyDrag } from 'utilities/dragDrop';
 
-import { isEmpty } from 'lodash'
-import { initialData } from 'actions/initialData'
+import { isEmpty } from 'lodash';
+
+import { fetchBoardDetail } from 'actions/apiCall';
 
 const BoardContent = () => {
-	const [board, setBoard] = useState({})
-	const [columns, setColumns] = useState([])
-	const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
-	const [newColumnTitle, setNewColumnTitle] = useState('')
+	const [board, setBoard] = useState({});
+	const [columns, setColumns] = useState([]);
+	const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
+	const [newColumnTitle, setNewColumnTitle] = useState('');
 
-	const newColumnInputRef = useRef(null)
+	const newColumnInputRef = useRef(null);
 
 	useEffect(() => {
-		const boardFromDB = initialData.boards.find(
-			(board) => board.id === 'board-1'
-		)
-		if (boardFromDB) {
-			setBoard(boardFromDB)
-
-			setColumns(mapOrder(boardFromDB.columns, boardFromDB.columnOrder, 'id'))
-		}
-	}, [])
+		const boardId = '62375035b1a588be64ed25e9';
+		fetchBoardDetail(boardId).then((board) => {
+			setBoard(board);
+			setColumns(mapOrder(board.columns, board.columnOrder, '_id'));
+		});
+	}, []);
 
 	useEffect(() => {
 		if (newColumnInputRef && newColumnInputRef.current) {
-			newColumnInputRef.current.focus()
-			newColumnInputRef.current.select()
+			newColumnInputRef.current.focus();
+			newColumnInputRef.current.select();
 		}
-	}, [openNewColumnForm])
+	}, [openNewColumnForm]);
 
 	if (isEmpty(board)) {
-		return <div className="not-found">Board not found</div>
+		return <div className="not-found">Board not found</div>;
 	}
 
 	const onColumnDrop = (dropResult) => {
-		let newColumns = [...columns]
-		newColumns = applyDrag(newColumns, dropResult)
+		let newColumns = [...columns];
+		newColumns = applyDrag(newColumns, dropResult);
 
-		const newBoard = { ...board }
-		newBoard.columnOrder = newColumns.map((column) => column.id)
-		newBoard.columns = newColumns
+		const newBoard = { ...board };
+		newBoard.columnOrder = newColumns.map((column) => column._id);
+		newBoard.columns = newColumns;
 
-		setColumns(newColumns)
-		setBoard(newBoard)
-	}
+		setColumns(newColumns);
+		setBoard(newBoard);
+	};
 
 	const onCardDrop = (columnId, dropResult) => {
 		if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-			let newColumns = [...columns]
+			let newColumns = [...columns];
 
-			let currentColumn = newColumns.find((column) => column.id === columnId)
-			currentColumn.cards = applyDrag(currentColumn.cards, dropResult)
-			currentColumn.cardOrder = currentColumn.cards.map((card) => card.id)
+			let currentColumn = newColumns.find((column) => column._id === columnId);
+			currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
+			currentColumn.cardOrder = currentColumn.cards.map((card) => card._id);
 
-			setColumns(newColumns)
+			setColumns(newColumns);
 		}
-	}
+	};
 
-	const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
+	const toggleOpenNewColumnForm = () =>
+		setOpenNewColumnForm(!openNewColumnForm);
 
 	const addNewColumn = () => {
 		if (!newColumnTitle) {
-			newColumnInputRef.current.focus()
-			return
+			newColumnInputRef.current.focus();
+			return;
 		}
 
 		const newColumnToAdd = {
 			id: Math.random.toString(35).substr(2, 5), // 5 random character
-			boardId: board.id,
+			boardId: board._id,
 			title: newColumnTitle,
 			cardOrder: [],
 			cards: [],
-		}
+		};
 
-		const newColumns = [...columns]
-		newColumns.push(newColumnToAdd)
+		const newColumns = [...columns];
+		newColumns.push(newColumnToAdd);
 
-		const newBoard = { ...board }
-		newBoard.columnOrder = newColumns.map((column) => column.id)
-		newBoard.columns = newColumns
+		const newBoard = { ...board };
+		newBoard.columnOrder = newColumns.map((column) => column._id);
+		newBoard.columns = newColumns;
 
-		setColumns(newColumns)
-		setBoard(newBoard)
-		setOpenNewColumnForm(!openNewColumnForm)
-	}
+		setColumns(newColumns);
+		setBoard(newBoard);
+		setOpenNewColumnForm(!openNewColumnForm);
+	};
 
 	const onUpdateColumn = (newColumnToUpdate) => {
-		const columnIdToUpdate = newColumnToUpdate.id
+		const columnIdToUpdate = newColumnToUpdate._id;
 
-		const newColumns = [...columns]
+		const newColumns = [...columns];
 		const columnIndexToUpdate = newColumns.findIndex(
-			(i) => i.id === columnIdToUpdate
-		)
+			(i) => i._id === columnIdToUpdate
+		);
 
 		if (newColumnToUpdate._destroy) {
 			//remove column
-			newColumns.splice(columnIndexToUpdate, 1)
+			newColumns.splice(columnIndexToUpdate, 1);
 		} else {
-			newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate)
+			newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate);
 		}
 
-		const newBoard = { ...board }
-		newBoard.columnOrder = newColumns.map((column) => column.id)
-		newBoard.columns = newColumns
+		const newBoard = { ...board };
+		newBoard.columnOrder = newColumns.map((column) => column._id);
+		newBoard.columns = newColumns;
 
-		setColumns(newColumns)
-		setBoard(newBoard)
-	}
+		setColumns(newColumns);
+		setBoard(newBoard);
+	};
 
 	return (
 		<div className="board-content">
@@ -174,9 +173,7 @@ const BoardContent = () => {
 								<Button size="sm" variant="success" onClick={addNewColumn}>
 									Add column
 								</Button>
-								<span
-									className="cancel-icon"
-									onClick={toggleOpenNewColumnForm}>
+								<span className="cancel-icon" onClick={toggleOpenNewColumnForm}>
 									<i className="fa fa-trash icon"></i>
 								</span>
 							</div>
@@ -185,7 +182,7 @@ const BoardContent = () => {
 				)}
 			</BootstrapContainer>
 		</div>
-	)
-}
+	);
+};
 
-export default BoardContent
+export default BoardContent;
