@@ -13,7 +13,9 @@ import {
 	selectAllInlineText,
 	saveContentAfterPressEnter,
 } from 'utilities/contentEditable';
+
 import cloneDeep from 'lodash/cloneDeep';
+import { createNewCard, updateColumn } from 'actions/apiCall';
 
 const Column = ({ column, onCardDrop, onUpdateColumn }) => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -39,6 +41,7 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
 
 	const toggleShowConfirmModal = () => setShowConfirmModal(!showConfirmModal);
 
+	// Remove column
 	const handleConfirmModalAction = (type) => {
 		if (type === MODAL_ACTION_CONFIRM) {
 			//remove action
@@ -46,7 +49,11 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
 				...column,
 				_destroy: true,
 			};
-			onUpdateColumn(newColumn);
+
+			//Call API
+			updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
+				onUpdateColumn(updatedColumn);
+			});
 		}
 		toggleShowConfirmModal();
 	};
@@ -55,12 +62,20 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
 		setColumnTitle(e.target.value);
 	};
 
+	//Update column title
 	const handleBlurColumnTitle = () => {
-		const newColumn = {
-			...column,
-			title: columnTitle,
-		};
-		onUpdateColumn(newColumn);
+		if (columnTitle !== column.title) {
+			const newColumn = {
+				...column,
+				title: columnTitle,
+			};
+
+			//Call API update column
+			updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
+				updatedColumn.cards = newColumn.cards;
+				onUpdateColumn(updatedColumn);
+			});
+		}
 	};
 
 	const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm);
@@ -72,20 +87,21 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
 		}
 
 		const newCardToAdd = {
-			id: Math.random.toString(35).substr(2, 5), // 5 random character
 			boardId: column.boardId,
 			columnId: column._id,
 			title: newCardTitle,
-			cover: null,
 		};
 
-		const newColumn = cloneDeep(column);
-		newColumn.cards.push(newCardToAdd);
-		newColumn.cardOrder.push(newCardToAdd._id);
+		// Call API
+		createNewCard(newCardToAdd).then((card) => {
+			const newColumn = cloneDeep(column);
+			newColumn.cards.push(card);
+			newColumn.cardOrder.push(card._id);
 
-		onUpdateColumn(newColumn);
-		setNewCardTitle('');
-		toggleOpenNewCardForm();
+			onUpdateColumn(newColumn);
+			setNewCardTitle('');
+			toggleOpenNewCardForm();
+		});
 	};
 
 	return (
