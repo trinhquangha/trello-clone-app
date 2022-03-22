@@ -18,7 +18,7 @@ import { applyDrag } from 'utilities/dragDrop';
 
 import { isEmpty } from 'lodash';
 
-import { fetchBoardDetail } from 'actions/apiCall';
+import { fetchBoardDetail, createNewColumn } from 'actions/apiCall';
 
 const BoardContent = () => {
 	const [board, setBoard] = useState({});
@@ -81,23 +81,23 @@ const BoardContent = () => {
 		}
 
 		const newColumnToAdd = {
-			id: Math.random.toString(35).substr(2, 5), // 5 random character
 			boardId: board._id,
 			title: newColumnTitle,
-			cardOrder: [],
-			cards: [],
 		};
 
-		const newColumns = [...columns];
-		newColumns.push(newColumnToAdd);
+    //Call API
+		createNewColumn(newColumnToAdd).then(column => {
+      const newColumns = [...columns];
+      newColumns.push(column);
 
-		const newBoard = { ...board };
-		newBoard.columnOrder = newColumns.map((column) => column._id);
-		newBoard.columns = newColumns;
+      const newBoard = { ...board };
+      newBoard.columnOrder = newColumns.map((col) => col._id);
+      newBoard.columns = newColumns;
 
-		setColumns(newColumns);
-		setBoard(newBoard);
-		setOpenNewColumnForm(!openNewColumnForm);
+      setColumns(newColumns);
+      setBoard(newBoard);
+      setOpenNewColumnForm(!openNewColumnForm);
+    })
 	};
 
 	const onUpdateColumn = (newColumnToUpdate) => {
