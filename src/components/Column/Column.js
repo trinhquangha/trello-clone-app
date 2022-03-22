@@ -1,43 +1,43 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { Container, Draggable } from 'react-smooth-dnd'
-import { Button, Dropdown, Form } from 'react-bootstrap'
+import React, { useEffect, useState, useRef } from 'react';
+import { Container, Draggable } from 'react-smooth-dnd';
+import { Button, Dropdown, Form } from 'react-bootstrap';
 
-import './Column.scss'
+import './Column.scss';
 
-import Card from 'components/Card/Card'
-import ConfirmModal from 'components/CommonModal/ConfirmModal'
+import Card from 'components/Card/Card';
+import ConfirmModal from 'components/CommonModal/ConfirmModal';
 
-import { mapOrder } from 'utilities/sorts'
-import { MODAL_ACTION_CONFIRM } from 'utilities/constants'
+import { mapOrder } from 'utilities/sorts';
+import { MODAL_ACTION_CONFIRM } from 'utilities/constants';
 import {
 	selectAllInlineText,
 	saveContentAfterPressEnter,
-} from 'utilities/contentEditable'
-import cloneDeep from 'lodash/cloneDeep'
+} from 'utilities/contentEditable';
+import cloneDeep from 'lodash/cloneDeep';
 
 const Column = ({ column, onCardDrop, onUpdateColumn }) => {
-	const [showConfirmModal, setShowConfirmModal] = useState(false)
-	const [columnTitle, setColumnTitle] = useState('')
+	const [showConfirmModal, setShowConfirmModal] = useState(false);
+	const [columnTitle, setColumnTitle] = useState('');
 
-	const [openNewCardForm, setOpenNewCardForm] = useState(false)
-	const [newCardTitle, setNewCardTitle] = useState('')
+	const [openNewCardForm, setOpenNewCardForm] = useState(false);
+	const [newCardTitle, setNewCardTitle] = useState('');
 
-	const newCardTextareaRef = useRef(null)
+	const newCardTextareaRef = useRef(null);
 
 	useEffect(() => {
-		setColumnTitle(column.title)
-	}, [column.title])
+		setColumnTitle(column.title);
+	}, [column.title]);
 
 	useEffect(() => {
 		if (newCardTextareaRef && newCardTextareaRef.current) {
-			newCardTextareaRef.current.focus()
-			newCardTextareaRef.current.select()
+			newCardTextareaRef.current.focus();
+			newCardTextareaRef.current.select();
 		}
-	}, [openNewCardForm])
+	}, [openNewCardForm]);
 
-	const cards = mapOrder(column.cards, column.cardOrder, 'id')
+	const cards = mapOrder(column.cards, column.cardOrder, '_id');
 
-	const toggleShowConfirmModal = () => setShowConfirmModal(!showConfirmModal)
+	const toggleShowConfirmModal = () => setShowConfirmModal(!showConfirmModal);
 
 	const handleConfirmModalAction = (type) => {
 		if (type === MODAL_ACTION_CONFIRM) {
@@ -45,48 +45,48 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
 			const newColumn = {
 				...column,
 				_destroy: true,
-			}
-			onUpdateColumn(newColumn)
+			};
+			onUpdateColumn(newColumn);
 		}
-		toggleShowConfirmModal()
-	}
+		toggleShowConfirmModal();
+	};
 
 	const handleChangeColumnTitle = (e) => {
-		setColumnTitle(e.target.value)
-	}
+		setColumnTitle(e.target.value);
+	};
 
 	const handleBlurColumnTitle = () => {
 		const newColumn = {
 			...column,
 			title: columnTitle,
-		}
-		onUpdateColumn(newColumn)
-	}
+		};
+		onUpdateColumn(newColumn);
+	};
 
-	const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
+	const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm);
 
 	const addNewCard = () => {
 		if (!newCardTitle) {
-			newCardTextareaRef.current.focus()
-			return
+			newCardTextareaRef.current.focus();
+			return;
 		}
 
 		const newCardToAdd = {
 			id: Math.random.toString(35).substr(2, 5), // 5 random character
 			boardId: column.boardId,
-			columnId: column.id,
+			columnId: column._id,
 			title: newCardTitle,
 			cover: null,
-		}
+		};
 
-		const newColumn = cloneDeep(column)
-		newColumn.cards.push(newCardToAdd)
-		newColumn.cardOrder.push(newCardToAdd.id)
+		const newColumn = cloneDeep(column);
+		newColumn.cards.push(newCardToAdd);
+		newColumn.cardOrder.push(newCardToAdd._id);
 
-		onUpdateColumn(newColumn)
-		setNewCardTitle('')
-		toggleOpenNewCardForm()
-	}
+		onUpdateColumn(newColumn);
+		setNewCardTitle('');
+		toggleOpenNewCardForm();
+	};
 
 	return (
 		<div className="column">
@@ -128,7 +128,7 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
 			<div className="card-list">
 				<Container
 					groupName="col"
-					onDrop={(dropResult) => onCardDrop(column.id, dropResult)}
+					onDrop={(dropResult) => onCardDrop(column._id, dropResult)}
 					getChildPayload={(index) => cards[index]}
 					dragClass="card-ghost"
 					dropClass="card-ghost-drop"
@@ -184,7 +184,7 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
 				content={`Are you sure you want to remove <strong>${column.title}</strong>. <br />All related cards will be removed!`}
 			/>
 		</div>
-	)
-}
+	);
+};
 
-export default Column
+export default Column;
