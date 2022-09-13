@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container as BootstrapContainer, Row, Col } from 'react-bootstrap';
+import { Col, Container as BootstrapContainer, Row } from 'react-bootstrap';
 
 import './BoardBar.scss';
 
@@ -25,23 +25,23 @@ const BoardBar = () => {
 									alt="member-avatar"
 								/>
 								<img
-									src="https://saybongda.com/wp-content/uploads/2021/05/Kai-Havertz2.jpg"
+									src="https://anhdep123.com/wp-content/uploads/2020/11/Ve-ngoai-dien-trai-khien-nhieu-fan-ham-mo-thich-thu.jpg"
 									alt="member-avatar"
 								/>
 								<img
-									src="https://congluan.ex-cdn.com/resize/700x400/files/news/2021/02/18/tien-dao-erling-haaland-pha-ky-luc-champions-league-094022.jpg"
+									src="https://anhdep123.com/wp-content/uploads/2020/11/anh-cau-thu-messi-696x464.jpeg"
 									alt="member-avatar"
 								/>
 								<img
-									src="https://bangsport.net/wp-content/uploads/2021/03/160.jpg"
+									src="https://anhdep123.com/wp-content/uploads/2020/11/hinh-anh-cau-thu-cong-phuong-dep.jpg"
 									alt="member-avatar"
 								/>
 								<img
-									src="https://static.bongda24h.vn/medias/original/2020/11/12/son-heung-min-2.jpg"
+									src="https://anhdep123.com/wp-content/uploads/2020/11/anh-quang-hai.jpg"
 									alt="member-avatar"
 								/>
 								<img
-									src="https://bangsport.net/wp-content/uploads/2021/12/70.jpg"
+									src="https://anhdep123.com/wp-content/uploads/2020/11/hinh-anh-cau-thu-doan-van-lam.jpg"
 									alt="member-avatar"
 								/>
 								<span className="more-members">+7</span>
